@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chúc mừng 20/10</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 3em;
+    flex-direction: column;
+  }
+
+  #text {
+    text-shadow: 0 0 20px red, 0 0 40px red;
+    animation: glow 1.5s infinite alternate;
+    transition: opacity 1s;
+    z-index: 2;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 10px red; }
+    to { text-shadow: 0 0 30px red; }
+  }
+
+  /* Trái tim hồng bằng CSS */
+  .heart {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    transform: rotate(-45deg);
+    background: pink;
+    animation: beat 1s infinite;
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: pink;
+  }
+
+  .heart::before {
+    top: -60px;
+    left: 0;
+  }
+
+  .heart::after {
+    left: 60px;
+    top: 0;
+  }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1) rotate(-45deg); }
+    25% { transform: scale(1.1) rotate(-45deg); }
+    50% { transform: scale(1.2) rotate(-45deg); }
+    75% { transform: scale(1.1) rotate(-45deg); }
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div id="text"></div>
+<div class="heart" id="heart"></div>
+
+<script>
+// Hiệu ứng mưa kín ký tự "thidun iub an"
+const c = document.getElementById("matrix");
+const ctx = c.getContext("2d");
+c.height = window.innerHeight;
+c.width = window.innerWidth;
+const chars = "thidun iub an";
+const font_size = 16;
+const columns = Math.floor(c.width / font_size);
+const drops = Array(columns).fill(1);
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = "#ff0000";
+  ctx.font = font_size + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+    ctx.fillText(text, i * font_size, drops[i] * font_size);
+    if (drops[i] * font_size > c.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(draw, 35);
+
+// Hiện chữ lần lượt
+const messages = [
+  "Chúc mừng",
+  "20/10",
+  "Chúc bạn iu chinh điẹp",
+  "Học giỏi",
+  "Mãi mãi iu toiiiii 💖"
+];
+let textEl = document.getElementById("text");
+let heart = document.getElementById("heart");
+let i = 0;
+
+function showNextMessage() {
+  if (i < messages.length) {
+    textEl.innerHTML = messages[i];
+    textEl.style.opacity = 1;
+    setTimeout(() => {
+      textEl.style.opacity = 0;
+      i++;
+      setTimeout(showNextMessage, 1000);
+    }, 2000);
+  } else {
+    textEl.style.display = "none";
+    heart.style.opacity = 1;
+  }
+}
+setTimeout(showNextMessage, 1000);
+</script>
+</body>
+</html>
